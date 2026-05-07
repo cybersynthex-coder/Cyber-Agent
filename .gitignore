@@ -1,0 +1,11 @@
+node_modules/
+.env
+.playwright/
+.chrome-profile/
+projects/*/node_modules/
+projects/*/.expo/
+projects/*/dist/
+projects/*/build/
+backups/
+logs/
+.agent/
