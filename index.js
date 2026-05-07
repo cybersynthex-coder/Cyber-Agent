@@ -11,15 +11,24 @@ async function bootstrap() {
   const hasSession = (await fs.readdir(profilePath)).length > 0;
 
   const browser = await chromium.launchPersistentContext(profilePath, {
-    headless: hasSession
+    channel: 'chrome',
+    headless: hasSession,
+    viewport: null,
+    args: [
+      '--start-maximized'
+    ]
   });
 
-  const page = await browser.newPage();
+  const page = browser.pages()[0] || await browser.newPage();
 
-  await page.goto('https://chatgpt.com');
+  await page.goto('https://chatgpt.com', {
+    waitUntil: 'domcontentloaded'
+  });
 
   if (!hasSession) {
-    console.log('\nLogin to ChatGPT then press ENTER.\n');
+    console.log('\nChrome login bootstrap started.');
+    console.log('Login to ChatGPT with your Google account.');
+    console.log('After login press ENTER here.\n');
 
     await new Promise((resolve) => {
       const rl = readline.createInterface({
@@ -34,7 +43,7 @@ async function bootstrap() {
     });
   }
 
-  console.log('Cyber-Agent runtime ready');
+  console.log('\nCyber-Agent runtime ready\n');
 
   const projectPath = await createProjectWorkspace('task-app');
 
